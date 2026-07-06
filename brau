@@ -1,0 +1,293 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BRAU_UG - Student Results</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f0f0;
+            color: #333;
+        }
+        .header {
+            background: #0066cc;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .header img {
+            height: 70px;
+        }
+        .header h1 {
+            font-size: 22px;
+            margin: 0;
+        }
+        .main-container {
+            max-width: 1100px;
+            margin: 20px auto;
+            background: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .form-section {
+            padding: 25px 30px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #ddd;
+        }
+        .form-row {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .input-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        label {
+            font-weight: bold;
+            white-space: nowrap;
+        }
+        input[type="text"] {
+            padding: 8px 12px;
+            border: 1px solid #999;
+            width: 280px;
+        }
+        select {
+            padding: 8px 12px;
+            border: 1px solid #999;
+            width: 180px;
+        }
+        .buttons {
+            display: flex;
+            gap: 10px;
+        }
+        .btn-green {
+            background: #28a745;
+            color: white;
+            padding: 10px 25px;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .btn-blue {
+            background: #007bff;
+            color: white;
+            padding: 10px 25px;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .result-area {
+            padding: 30px;
+            min-height: 400px;
+        }
+        .university-logo {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .university-logo img {
+            height: 90px;
+        }
+        .result-details {
+            margin: 30px 0;
+            line-height: 2.2;
+        }
+        .result-details p {
+            margin: 8px 0;
+        }
+        .result-details strong {
+            display: inline-block;
+            width: 220px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+        }
+        th, td {
+            border: 1px solid #666;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #0066cc;
+            color: white;
+        }
+        .pass { color: green; font-weight: bold; }
+        .fail { color: red; font-weight: bold; }
+        .footer {
+            text-align: center;
+            padding: 15px;
+            background: #f8f9fa;
+            font-size: 13px;
+            border-top: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <!-- Header -->
+        <div class="header">
+            <img src="ChatGPT Image Jul 7, 2026, 02_11_04 AM.png" alt="BRAU Logo">
+            <h1>DR. B.R. AMBEDKAR UNIVERSITY, SRIKAKULAM</h1>
+        </div>
+
+        <!-- Form -->
+        <div class="form-section">
+            <div class="form-row">
+                <div class="input-group">
+                    <label>Registration No:</label>
+                    <input type="text" id="hallTicket" placeholder="Enter Hall Ticket" maxlength="20">
+                </div>
+                <div class="input-group">
+                    <label>Year / Semester:</label>
+                    <select id="semester">
+                        <option value="4">IV Semester</option>
+                    </select>
+                </div>
+                <div class="buttons">
+                    <button class="btn-green" onclick="getResult()">GET RESULT</button>
+                    <button class="btn-blue" onclick="window.print()">PRINT</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Result Area -->
+        <div id="resultSection" class="result-area" style="display: none;">
+            <div class="university-logo">
+                <img src="ChatGPT Image Jul 7, 2026, 02_11_04 AM.png" alt="University Emblem">
+                <h2 style="color: #c00; margin: 10px 0;">Dr. B. R. AMBEDKAR UNIVERSITY, SRIKAKULAM</h2>
+                <p style="font-style: italic; color: #b8860b;">డా. బి. ఆర్. అంబేద్కర్ విశ్వవిద్యాలయం, శ్రీకాకుళం</p>
+                <p style="font-size: 14px;">Accredited by NAAC with 'B' Grade & ISO 9001:2015 Certified</p>
+            </div>
+
+            <div class="result-details">
+                <p><strong>Name of the Candidate :</strong> <span id="name"></span></p>
+                <p><strong>Course :</strong> BCA</p>
+                <p><strong>Registration Number :</strong> <span id="regNo"></span></p>
+                <p><strong>College Name & Address :</strong> Kakinada Sri Aditya Degree College Srikakulam</p>
+            </div>
+
+            <h3 style="text-align:center; margin:20px 0;">Subject-wise Results</h3>
+            <table id="marksTable">
+                <thead>
+                    <tr>
+                        <th>Subject Code</th>
+                        <th>Subject Name</th>
+                        <th>Grade</th>
+                        <th>Grade Points</th>
+                        <th>Result</th>
+                    </tr>
+                </thead>
+                <tbody id="marksBody"></tbody>
+            </table>
+
+            <h3 style="text-align:center; margin-top:25px;">
+                Overall SGPA: <span id="sgpa" style="font-size:1.3em;"></span> 
+                &nbsp;&nbsp;|&nbsp;&nbsp; 
+                Status: <span id="status"></span>
+            </h3>
+        </div>
+
+        <div class="footer">
+            Copyright © 2025 DR.B.R.AMBEDKAR UNIVERSITY, SRIKAKULAM<br>
+            All rights reserved. Developed by D Base Solutions Private Limited.
+        </div>
+    </div>
+
+    <script>
+        const subjects = [
+            { code: "MAD", name: "Mobile Application Development" },
+            { code: "DMDW", name: "DATA MINING AND DATA WAREHOUSING" },
+            { code: "OS", name: "OPERATING SYSTEMS" },
+            { code: "AWS", name: "AMAZON WEB SERVICES" },
+            { code: "PYTHON", name: "PYTHON PROGRAMMING" },
+            { code: "BSTAT", name: "BASIC STATISTICS" },
+            { code: "PADMN", name: "PUBLIC ADMINISTRATION" }
+        ];
+
+        const resultsDB = {
+            "24220141199064": { name: "KONA JATIN PAUL", sgpa: 7.6, status: "PASS", failed: [] },
+            "24220141199061": { name: "KOMARA CHINNI KRISHNA", sgpa: 7.0, status: "PASS", failed: [] },
+            "24220141199004": { name: "ALUGOLU SAGAR", sgpa: 7.54, status: "PASS", failed: [] },
+            "24220141199025": { name: "BOTTA RAJ SEKHAR", sgpa: 0, status: "FAIL", failed: ["DMDW", "AWS"] },
+            "24220141199096": { name: "PATRUNI GAYATHRI", sgpa: 7.9, status: "PASS", failed: [] },
+            "24220141199118": { name: "URITI LAHARI", sgpa: 0, status: "FAIL", failed: ["MAD", "DMDW"] },
+            "2422100119018": { name: "GONAPA RANJITHA", sgpa: 0, status: "FAIL", failed: ["PYTHON", "BSTAT"] },
+            "242200119002": { name: "NIKITA YADAV", sgpa: 0, status: "FAIL", failed: ["MAD", "PYTHON"] }
+        };
+
+        function getRandomGradePoint() {
+            return (Math.random() * 3 + 6).toFixed(1);
+        }
+
+        function getResult() {
+            const hall = document.getElementById('hallTicket').value.trim();
+            if (!hall) {
+                alert("Please enter Hall Ticket Number");
+                return;
+            }
+
+            const data = resultsDB[hall];
+            if (!data) {
+                alert("No results found for this Hall Ticket Number.");
+                document.getElementById('resultSection').style.display = 'none';
+                return;
+            }
+
+            document.getElementById('name').textContent = data.name;
+            document.getElementById('regNo').textContent = hall;
+
+            const tbody = document.getElementById('marksBody');
+            tbody.innerHTML = '';
+
+            let totalPoints = 0;
+
+            subjects.forEach(sub => {
+                const row = document.createElement('tr');
+                const isFailed = data.failed.includes(sub.code);
+                
+                let gp = "0";
+                let grade = "F";
+                let resultStatus = "FAIL";
+
+                if (!isFailed) {
+                    gp = getRandomGradePoint();
+                    grade = parseFloat(gp) >= 8.0 ? "A" : parseFloat(gp) >= 7.0 ? "B+" : "B";
+                    resultStatus = "PASS";
+                    totalPoints += parseFloat(gp);
+                }
+
+                row.innerHTML = `
+                    <td>${sub.code}</td>
+                    <td>${sub.name}</td>
+                    <td>${grade}</td>
+                    <td>${gp}</td>
+                    <td class="${isFailed ? 'fail' : 'pass'}">${resultStatus}</td>
+                `;
+                tbody.appendChild(row);
+            });
+
+            const avgSGPA = data.sgpa > 0 ? data.sgpa : (totalPoints / 7).toFixed(2);
+            document.getElementById('sgpa').textContent = avgSGPA;
+            document.getElementById('status').innerHTML = data.status === "PASS" ? 
+                `<span class="pass">PASS</span>` : `<span class="fail">FAIL</span>`;
+
+            document.getElementById('resultSection').style.display = 'block';
+        }
+
+        // Enter key support
+        document.getElementById('hallTicket').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') getResult();
+        });
+    </script>
+</body>
+</html>
